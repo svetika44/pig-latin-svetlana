@@ -15,6 +15,13 @@
 # limitations under the License.
 #
 import webapp2
+import jinja2
+import os 
+
+my_env = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -22,15 +29,15 @@ class MainHandler(webapp2.RequestHandler):
 
 class CountHandler(webapp2.RequestHandler):
     def get(self):
-      for number in range (1,10):
-        print "what happens"
-        self.response.write(number)
+      count_template=my_env.get_template('templates/count.html')
+      self.response.write(count_template.render())
 
 class PigHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Piglettes!')
+        pig_template=my_env.get_template('templates/pig.html')
+        self.response.write(pig_template.render())
 
-
+# route, address book as to where you find things 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/count', CountHandler),
