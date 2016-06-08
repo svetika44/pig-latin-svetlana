@@ -29,13 +29,36 @@ class MainHandler(webapp2.RequestHandler):
 
 class CountHandler(webapp2.RequestHandler):
     def get(self):
+      my_variables = {"number" : [9,5,5,10]}
       count_template=my_env.get_template('templates/count.html')
-      self.response.write(count_template.render())
+      self.response.write(count_template.render(my_variables))
 
 class PigHandler(webapp2.RequestHandler):
     def get(self):
-        pig_template=my_env.get_template('templates/pig.html')
-        self.response.write(pig_template.render())
+      pig_template=my_env.get_template('templates/pig.html')
+      self.response.write(pig_template.render())
+
+
+    def post(self):
+      def pigLatin(word):
+        vowels = ["a", "e", "i", "o", "u"]
+        if word[0].lower() in vowels:
+          pig_latin_word = word + "ay"
+        else:
+          if word[1].lower() not in vowels:
+            first_letters = word[:2]
+            rest_of_word = word[2:]
+            pig_latin_word = rest_of_word + first_letters + "ay"
+          else:
+            first_letter = word[0]
+            rest_of_word = word[1:]
+            pig_latin_word = rest_of_word + first_letter + "ay"
+        return pig_latin_word
+
+      pl_result = pigLatin(self.request.get ("user_word"))
+      my_variables = {"translated_word": pl_result}
+      pig_template=my_env.get_template('templates/pig.html')
+      self.response.write(pig_template.render(my_variables))
 
 # route, address book as to where you find things 
 app = webapp2.WSGIApplication([
